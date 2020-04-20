@@ -13,14 +13,31 @@ class dashboard extends Component{
     };
 
     componentDidMount() {
-      
+        this.popularVideoList();
       }
     
       showError = errorMessage => {
-     
+        this.setState({ error: true, loading: false, errorMessage: errorMessage });
       };
     
       popularVideoList = () => {
+        getTrendingVideos()
+        .then(response => {
+          console.log(response);
+          if (response.items.length > 0) {
+            this.setState({
+              videoList: response.items,
+              currentVideo: response.items[0],
+              loading: false
+            });
+          } else {
+            let errorMessage = "Unable to Load Videos";
+            this.showError(errorMessage);
+          }
+        })
+        .catch(error => {
+          this.showError(error.message);
+        });
        
       };
     
@@ -49,17 +66,33 @@ class dashboard extends Component{
     
 
       setCurrentVideo = video => {
-       
+        if (video !== this.state.currentVideo) {
+            this.setState({
+              currentVideo: video,
+              isLiked: false,
+              comments: []
+            });
+          }
       };
     
       toggleLike = () => {
-       
+        this.setState({
+            isLiked: !this.state.isLiked
+          });
       };
     
     
       postComment = commentObj => {
-      
+        const { userName, commentText } = commentObj;
+        if (userName.length > 0 && commentText.length > 0) {
+          const updatedComments = this.state.comments;
+          updatedComments.push(commentObj);
+          this.setState({
+            comments: updatedComments
+          });
+        }
       };
+      
       render() {
         const {
           videoList,
@@ -73,7 +106,18 @@ class dashboard extends Component{
         return (
           <div>
             <SearchBar searchVideo={this.searchVideo} />
-          
+            <VideoArea
+            videoList={videoList}
+            loading={loading}
+            currentVideo={currentVideo}
+            setCurrentVideo={this.setCurrentVideo}
+            toggleLike={this.toggleLike}
+            isLiked={isLiked}
+            postComment={this.postComment}
+            comments={comments}
+            error={error}
+            errorMessage={errorMessage}
+            />
           </div>
         );
       }

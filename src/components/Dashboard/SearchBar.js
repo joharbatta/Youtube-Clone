@@ -9,8 +9,7 @@ class SearchBar extends Component {
   onInputChange = searchQuery => {
     console.log(searchQuery)
     this.setState({
-      searchQuery
-     
+      searchQuery 
     });
   };
 
