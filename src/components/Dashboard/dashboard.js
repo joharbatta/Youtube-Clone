@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import SearchBar from './SearchBar'
+import VideoArea from "./VideoArea";
 import { getTrendingVideos, getSearchResult } from "./api";
 class dashboard extends Component{
 
@@ -92,7 +93,7 @@ class dashboard extends Component{
           });
         }
       };
-      
+
       render() {
         const {
           videoList,
