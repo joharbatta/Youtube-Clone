@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
-
+import SearchBar from './SearchBar'
+import { getTrendingVideos, getSearchResult } from "./api";
 class dashboard extends Component{
 
     state={
@@ -24,6 +25,25 @@ class dashboard extends Component{
       };
     
       searchVideo = query => {
+        this.setState({ loading: true, error: false });
+        getSearchResult(query)
+          .then(response => {
+            console.log(response);
+            if (response.items.length > 0) {
+              this.setState({
+                videoList: response.items,
+                currentVideo: response.items[0],
+                loading: false,
+                comments: []
+              });
+            } else {
+              let errorMessage = "No Videos Found";
+              this.showError(errorMessage);
+            }
+          })
+          .catch(error => {
+            this.showError(error.message);
+          });
        
       };
     
@@ -52,7 +72,8 @@ class dashboard extends Component{
         } = this.state;
         return (
           <div>
-            
+            <SearchBar searchVideo={this.searchVideo} />
+          
           </div>
         );
       }
